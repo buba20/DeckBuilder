@@ -60,6 +60,13 @@
         <script src="js/lib/handlebars.js"></script>
         <!-- Application files  -->
         <script src="js/templates/templates.js"></script>
-
+        <script src='js/lib/signals.js'></scripts>
+        <script src="js/app/app.js"></scripts>
+        <script src='js/app/http.js'></scripts>
+        
+        <script type="test/javascript">
+            app.initialized.dispatch();
+            app.started.dispatch();
+        </script>
     </body>
 </html>
