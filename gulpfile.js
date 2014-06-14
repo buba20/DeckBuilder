@@ -5,7 +5,7 @@ var declare = require('gulp-declare');
 var concat = require('gulp-concat');
 
 gulp.task('templates', function(){
-  gulp.src(['view/templates/*.hbs'])
+  gulp.src(['view/templates/*.html'])
     .pipe(handlebars())
     .pipe(defineModule('plain'))
     .pipe(declare({
