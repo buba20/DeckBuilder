@@ -51,7 +51,7 @@
       </div>
 
     </div>
-         
+         buba
          <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     
@@ -60,11 +60,11 @@
         <script src="js/lib/handlebars.js"></script>
         <!-- Application files  -->
         <script src="js/templates/templates.js"></script>
-        <script src='js/lib/signals.js'></scripts>
-        <script src="js/app/app.js"></scripts>
-        <script src='js/app/http.js'></scripts>
+        <script src='js/lib/signals.js'></script>
+        <script src="js/app/app.js"></script>
+        <script src='js/app/http.js'></script>
         
-        <script type="test/javascript">
+        <script type="text/javascript">
             app.initialized.dispatch();
             app.started.dispatch();
         </script>

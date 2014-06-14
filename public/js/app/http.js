@@ -6,11 +6,11 @@
         requestEnded: new signals.Signal()
     };
 
-    $.ajaxStart(function () {
+    $(document).ajaxStart(function () {
         http.requestStarted.dispatch();
     });
 
-    $.ajaxStop(function () {
+    $(document).ajaxStop(function () {
         http.requestEnded.dispatch();
     });
 
