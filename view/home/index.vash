@@ -25,8 +25,8 @@
             <div class="inner">
               <h3 class="masthead-brand">PuzzleQuest Deck Builder</h3>
               <ul class="nav masthead-nav">
-                <li class="active"><a href="#/">Home</a></li>
-                <li><a href="#/cards">Cards</a></li>
+                <li class="active"><a href="#/home">Home</a></li>
+                <li><a href="#/home/about">Cards</a></li>
                 <li><a href="#/contact">Contact</a></li>
               </ul>
             </div>
@@ -34,10 +34,14 @@
 
           <div class="inner cover">
             <h1 class="cover-heading">Cover your page.</h1>
-            <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+           
+            <div id="main-region"></div>
+           
+           <!-- <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
             <p class="lead">
               <a href="#" class="btn btn-lg btn-default">Learn more</a>
-            </p>
+            </p> -->
+
           </div>
 
           <div class="mastfoot">
@@ -51,22 +55,49 @@
       </div>
 
     </div>
-         buba
          <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="js/lib/bootstrap.js"></script>
         <script src="js/lib/handlebars.js"></script>
+        <script src='js/lib/signals.js'></script>
+        <script type="text/javascript" src='js/lib/crossroads.js'></script>
+        <script type="text/javascript" src='js/lib/hasher.js'></script>
+        <script type="text/javascript">
+            function parseHash(newHash, oldHash){
+              crossroads.parse(newHash);
+            }
+        </script>
         <!-- Application files  -->
         <script src="js/templates/templates.js"></script>
-        <script src='js/lib/signals.js'></script>
         <script src="js/app/app.js"></script>
         <script src='js/app/http.js'></script>
-        
+        <script type="text/javascript" src='js/app/region.js'></script>
+        <script type="text/javascript" src='js/app/service.js'></script>
+
+        <script type="text/javascript" src='js/app/controller/home.js'></script>
+        <script type="text/javascript" src='js/app/controller/deck.js'></script>
         <script type="text/javascript">
+
+            app.started.add(function(){
+              console.log('application started');
+              hasher.initialized.add(parseHash); //parse initial hash
+              hasher.changed.add(parseHash); //parse hash changes
+              hasher.init(); //start listening for history change
+ 
+            if(window.location.href.indexOf('#') === -1){
+                hasher.setHash('home');
+              }else{
+                hasher.setHash(hasher.getHash());
+              }
+            });
+            
+            app.initialized.add(function () {
+              app.started.dispatch();
+            });
+
             app.initialized.dispatch();
-            app.started.dispatch();
         </script>
     </body>
 </html>

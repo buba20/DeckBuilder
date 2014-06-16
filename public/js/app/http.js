@@ -21,5 +21,5 @@
     };
 
     app.http = http;
-    app.started.add(function () { console.log('http started'); });
+    
 })(app, $, signals);

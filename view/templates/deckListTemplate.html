@@ -1,0 +1,10 @@
+<ul>
+    {{#each decks}}
+    <li><a>{{this.name}}</a>
+    </li>
+    {{else}}
+    <li>No data found</li>
+    <li><a href="{{newDeckLink}}">Create new deck</a>
+    </li>
+    {{/each}}
+</ul>
