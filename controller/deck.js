@@ -1,8 +1,9 @@
-(function (deck) {
+(function(deck) {
     var service = require('../service');
 
-    var getAll = function (req, res) {
-        service.getAllDecks(function (err, decks) {
+    var get = function(req, res) {
+
+        service.deck.get(req.params.id, function(err, decks) {
             if (err) {
                 console.log(err);
             }
@@ -10,26 +11,33 @@
         });
     };
 
-    var getDeck = function (req, res) {
-        service.getDeck(req.params.id, function (err, dbdeck) {
-            if (err) { console.log(err); }
+    var add = function(req, res) {
 
-            res.json(dbdeck[0]);
-        });
-    }
+        service.deck.add(req.body.name, function(err) {
 
-    var addNew = function (req, res) {
-        service.addDeck(req.body.name, function (err) {
-            if (err) { console.log(err); }
+            if (err) {
+                console.log(err);
+            }
             res.end(req.body.name + ' Ok');
         });
 
-    }
+    };
 
-    deck.init = function (app) {
-        app.get("/api/deck", getAll);
-        app.get("/api/deck/:id", getDeck);
-        app.post("/api/deck", addNew);
+    var update = function(req, res) {
+
+        service.deck.update(req.body, function(err) {
+            if (err) {
+                console.log(err);
+            }
+            res.end('Ok');
+        });
+    };
+
+    deck.init = function(app) {
+        app.get("/api/deck", get);
+        app.get("/api/deck/:id", get);
+        app.post("/api/deck", update);
+        app.put("/api/deck", add);
     };
 
 })(module.exports);

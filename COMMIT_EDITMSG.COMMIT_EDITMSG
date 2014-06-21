@@ -1,0 +1,603 @@
+Service refactoring. Add new templates. 
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/controller/deck.js b/controller/deck.js
+index 61ac430..11382d0 100644
+--- a/controller/deck.js
++++ b/controller/deck.js
+@@ -1,8 +1,9 @@
+-(function (deck) {
++(function(deck) {
+     var service = require('../service');
+ 
+-    var getAll = function (req, res) {
+-        service.getAllDecks(function (err, decks) {
++    var get = function(req, res) {
++
++        service.deck.get(req.params.id, function(err, decks) {
+             if (err) {
+                 console.log(err);
+             }
+@@ -10,26 +11,33 @@
+         });
+     };
+ 
+-    var getDeck = function (req, res) {
+-        service.getDeck(req.params.id, function (err, dbdeck) {
+-            if (err) { console.log(err); }
++    var add = function(req, res) {
+ 
+-            res.json(dbdeck[0]);
+-        });
+-    }
++        service.deck.add(req.body.name, function(err) {
+ 
+-    var addNew = function (req, res) {
+-        service.addDeck(req.body.name, function (err) {
+-            if (err) { console.log(err); }
++            if (err) {
++                console.log(err);
++            }
+             res.end(req.body.name + ' Ok');
+         });
+ 
+-    }
++    };
++
++    var update = function(req, res) {
++
++        service.deck.update(req.body, function(err) {
++            if (err) {
++                console.log(err);
++            }
++            res.end('Ok');
++        });
++    };
+ 
+-    deck.init = function (app) {
+-        app.get("/api/deck", getAll);
+-        app.get("/api/deck/:id", getDeck);
+-        app.post("/api/deck", addNew);
++    deck.init = function(app) {
++        app.get("/api/deck", get);
++        app.get("/api/deck/:id", get);
++        app.post("/api/deck", update);
++        app.put("/api/deck", add);
+     };
+ 
+-})(module.exports);
+\ No newline at end of file
++})(module.exports);
+diff --git a/database/index.js b/database/index.js
+index ea9b526..6f89880 100644
+--- a/database/index.js
++++ b/database/index.js
+@@ -2,10 +2,11 @@
+ 
+     var mongoose = require('mongoose'),
+         connectionString = 'mongodb://localhost/PuzzleQuest',
+-        deckModel = require('./models/deck');
++        deckModel = require('./models/deck'),
++        seed = require('./seed');
+ 
+     db.openConnection = function () {
+-        mongoose.connect(connectionString);
++        return mongoose.connect(connectionString);
+     }
+ 
+     db.closeConnection = function () {
+@@ -14,5 +15,6 @@
+ 
+     db.models = {};
+     deckModel.init(db.models);
++    seed.run(db);
+ 
+ })(module.exports);
+\ No newline at end of file
+diff --git a/database/models/deck.js b/database/models/deck.js
+index 94214ec..4555f43 100644
+--- a/database/models/deck.js
++++ b/database/models/deck.js
+@@ -1,18 +1,52 @@
+-(function (models) {
++(function(models) {
+     var mongoose = require('mongoose');
+ 
++    var CardTypeShema = mongoose.Schema({
++        name: {
++            type: String,
++            unique: true
++        }
++    });
++
+     var CardShema = mongoose.Schema({
+-        name: { type: String, unique: true }
++        name: {
++            type: String,
++            unique: true
++        },
++        cardType: {
++            type: mongoose.Schema.Types.ObjectId,
++            ref: 'CardType'
++        },
++        level: Number,
++        stars: Number,
++        maxLevel: Number,
++        health: Number,
++        yellowDamage: Number,
++        redDamage: Number,
++        blueDamage: Number,
++        purpleDamage: Number,
++        greenDamage: Number,
++        blackDamage: Number,
++        criticalDamage: Number,
++        emptyDamage: Number,
++        powers: [{ 
++            name: String,
++            level: Number 
++        }]
+     });
++
+     var DeckShema = mongoose.Schema({
+-        name: { type: String, unique: true },
++        name: {
++            type: String,
++            unique: true
++        },
+         cards: ['Card']
+     });
+ 
+-    models.init = function (models) {
+-
++    models.init = function(models) {
++        models.CardType = mongoose.model('CardType', CardTypeShema);
+         models.Card = mongoose.model('Card', CardShema);
+         models.Deck = mongoose.model('Deck', DeckShema);
+     };
+ 
+-})(module.exports);
+\ No newline at end of file
++})(module.exports);
+diff --git a/database/seed.js b/database/seed.js
+new file mode 100644
+index 0000000..a63d1a7
+--- /dev/null
++++ b/database/seed.js
+@@ -0,0 +1,47 @@
++(function(seed) {
++    var names = {
++        MODERN: 'Modern',
++        CLASSIC: 'Classic',
++        MARVEL_NOW: 'Marvel NOW!',
++        ASTONISHING_X_MEN: 'Astonishing X-Men',
++        DARK_AVENGERS: 'Dark Avengers',
++        MODEL_35: 'Model 35',
++        MODEL_40: 'Model 40',
++        X_FORCE: 'X-Force',
++        INDESTRUCTIBLE: 'Indestructible',
++        STEVE_ROGERS: 'Steve Rogers',
++        GREY_SUITE: 'Grey Suite',
++        DARK_REGION: 'Dark Region',
++        MOHAWK: 'Mohawk',
++        PATCH: 'Patch',
++        ORIGINAL: 'Original'
++    };
++
++    var _db;
++
++    var cardTypeSeed = function() {
++        _db.openConnection();
++
++        _db.models.CardType.find({})
++            .exec(function(err, collection) {
++                if (collection.length === 0) {
++
++                    for (var name in names) {
++                        _db.models.CardType.create({
++                            name: names[name]
++                        });
++                    }
++                }
++            }).then(function() {
++                _db.closeConnection();
++            });
++
++    };
++
++    seed.run = function(db) {
++        _db = db;
++        cardTypeSeed();
++    };
++
++
++})(module.exports);
+diff --git a/package.json b/package.json
+index 972592c..d9a1526 100644
+--- a/package.json
++++ b/package.json
+@@ -16,9 +16,10 @@
+   },
+   "devDependencies": {
+     "gulp": "~3.8.0",
++    "gulp-concat": "~2.2.0",
++    "gulp-declare": "~0.2.0",
+     "gulp-define-module": "~0.1.1",
+     "gulp-handlebars": "~2.1.0",
+-    "gulp-concat": "~2.2.0",
+-    "gulp-declare": "~0.2.0"
++    "node-inspector": "^0.7.4"
+   }
+ }
+diff --git a/public/js/app/controller/deck.js b/public/js/app/controller/deck.js
+index ddcd02d..7c58965 100644
+--- a/public/js/app/controller/deck.js
++++ b/public/js/app/controller/deck.js
+@@ -1,12 +1,52 @@
+ /*deck controller*/
+-(function (app,$,crossroads) {
+-	
+-var newDeck  = function () {
+-	console.log(' new deck');
+-};
++(function(app, $, crossroads, newDeckTemplate, service, hasher) {
+ 
+-app.initialized.add(function(){
+-	crossroads.addRoute('deck/new',newDeck);
+-});
++    var formSubmit = function(e) {
++        e.preventDefault();
++        
++        var newDeckName =  app.region.main.querySelector("form input[name='deckName']").value;
++        var id = app.region.main.querySelector("form input[name='id']").value;
+ 
+-})(app,$,crossroads);
+\ No newline at end of file
++        if (!id) {
++            service.newDeck(newDeckName, function(e) {
++                hasher.setHash('home');
++            });
++        } else {
++            service.updateDeck({
++                name: newDeckName,
++                id: id
++            }, function(data) {
++                hasher.setHash('home');
++            });
++        }
++        return false;
++    };
++
++    var setupEditFrom = function(name, id) {
++        var form = newDeckTemplate({
++            name: name,
++            id: id
++        });
++
++        app.region.clearRegion(app.region.main);
++        app.region.main.innerHTML = form;
++        app.region.main.querySelector('button[type=submit]').addEventListener('click', formSubmit);
++    };
++
++    var newDeck = function() {
++        setupEditFrom('', '');
++    };
++
++    var editDeck = function(id) {
++        service.getDeck(id, function(data) {
++            if (data) {
++                setupEditFrom(data.name, data._id);
++            };
++        });
++    };
++    app.initialized.add(function() {
++        crossroads.addRoute('deck/new', newDeck);
++        crossroads.addRoute('deck/{id}', editDeck);
++    });
++
++})(app, $, crossroads, app.templates.newDeckTemplate, app.service, hasher);
+diff --git a/public/js/app/controller/home.js b/public/js/app/controller/home.js
+index 59a5385..87b7274 100644
+--- a/public/js/app/controller/home.js
++++ b/public/js/app/controller/home.js
+@@ -1,23 +1,26 @@
+ (function(app, $, crossroads, indexViewTemplate) {
+-    
++
+     var index = function() {
+ 
+-        app.service.getDeck(function(data) {
+-    
+-        	app.region.clearRegion(app.region.main);
+-    		data['newDeckLink'] = '#/deck/new';
+-            var el = indexViewTemplate(data);
+-    
++        app.service.getDecks(function(data) {
++
++            app.region.clearRegion(app.region.main);
++            var el = indexViewTemplate({
++                decks: data,
++                'newDeckLink': '#/deck/new'
++
++            });
++
+             app.region.main.innerHTML = el;
+-    
++
+         });
+-    
++
+     }; // end index 
+ 
+-    
++
+     app.initialized.add(function() {
+         crossroads.addRoute('home', index);
+     });
+ 
+ 
+-})(app, $, crossroads,app.templates.deckListTemplate);
++})(app, $, crossroads, app.templates.deckListTemplate);
+diff --git a/public/js/app/http.js b/public/js/app/http.js
+index 1663395..6e4d8ed 100644
+--- a/public/js/app/http.js
++++ b/public/js/app/http.js
+@@ -1,4 +1,4 @@
+-(function (app, $, signals) {
++(function(app, $, signals) {
+     var http = {};
+ 
+     http = {
+@@ -6,20 +6,34 @@
+         requestEnded: new signals.Signal()
+     };
+ 
+-    $(document).ajaxStart(function () {
++    $(document).ajaxStart(function() {
+         http.requestStarted.dispatch();
+     });
+ 
+-    $(document).ajaxStop(function () {
++    $(document).ajaxStop(function() {
+         http.requestEnded.dispatch();
+     });
+ 
+-    http.getJSON = function (url, next) {
+-        $.getJSON(url, function (data) {
++    http.getJSON = function(url, next) {
++        $.getJSON(url, function(data) {
+             next(data);
+         });
+     };
+ 
++    http.postJSON = function(url, data, next) {
++        $.post(url, data, function(e) {
++            next(e);
++        });
++    };
++
++    http.putJSON = function(url, data, next) {
++        $.ajax({
++            type: "PUT",
++            url: url,
++            data: data
++        }).done(next);
++    };
++
+     app.http = http;
+-    
+-})(app, $, signals);
+\ No newline at end of file
++
++})(app, $, signals);
+diff --git a/public/js/app/service.js b/public/js/app/service.js
+index 38c0391..1f736e2 100644
+--- a/public/js/app/service.js
++++ b/public/js/app/service.js
+@@ -1,8 +1,26 @@
+ (function(app) {
+     app.service = {};
+-    app.service.getDeck = function(next) {
++    app.service.getDecks = function(next) {
+         app.http.getJSON('/api/deck', function(data) {
+             next(data);
+         });
+     };
++    app.service.getDeck = function(id, next) {
++        app.http.getJSON('api/deck/' + id, function(data) {
++            next(data);
++        });
++    },
++    app.service.newDeck = function(newDeckName, next) {
++        app.http.putJSON('/api/deck', {
++                name: newDeckName
++            },
++            function(data) {
++                next(data);
++            });
++    };
++    app.service.updateDeck = function(data, next) {
++        app.http.postJSON('api/deck', data, function(data) {
++            next(data);
++        });
++    }
+ })(app);
+diff --git a/service/baseService.js b/service/baseService.js
+new file mode 100644
+index 0000000..3029f38
+--- /dev/null
++++ b/service/baseService.js
+@@ -0,0 +1,17 @@
++(function(base) {
++    var db = require('./../database');
++    base.exec = function(query, next) {
++        db.openConnection();
++        if (query.exec) {
++            query.exec(function(err, items) {
++                db.closeConnection();
++                next(err, items);
++            });
++        } else {
++            query.then(function(err, items) {
++                db.closeConnection();
++                next(err, items);
++            });
++        }
++    };
++})(module.exports);
+diff --git a/service/deck.js b/service/deck.js
+new file mode 100644
+index 0000000..73ddf27
+--- /dev/null
++++ b/service/deck.js
+@@ -0,0 +1,34 @@
++(function(service) {
++    var db = require('./../database'),
++        base = require('./baseService'),
++        model = db.models.Deck;
++
++    function isFunctionA(obj) {
++        return typeof obj === "function";
++    }
++
++    service.get = function(id, next) {
++        var query;
++        if (id && !isFunctionA(id)) {
++            query = model.findById(id);
++        } else {
++            query = model.find({});
++        }
++
++        base.exec(query, next);
++    };
++
++    service.add = function(name, next) {
++        var query = model.create({
++            name: name
++        });
++        base.exec(query, next);
++    };
++
++    service.update = function(obj, next) {
++    	var id = obj.id;
++    	delete obj.id;
++        var query = model.findByIdAndUpdate(id, obj);
++        base.exec(query, next);
++    };
++})(module.exports);
+diff --git a/service/index.js b/service/index.js
+index dc5e765..e53aff0 100644
+--- a/service/index.js
++++ b/service/index.js
+@@ -1,41 +1,6 @@
+-(function (service) {
++(function(service) {
+ 
+     var db = require('../database');
+-
+-    service.getAllDecks = function (next) {
+-        db.openConnection();
+-        db.models.Deck.find(function (err, decks) {
+-            db.closeConnection();
+-            next(err, decks);
+-        });
+-    };
+-
+-    service.getDeck = function (id, next) {
+-        db.openConnection();
+-        db.models.Deck.find({ _id: id }, function (err, deck) {
+-            db.closeConnection();
+-            next(err, deck);
+-        });
+-    };
+-
+-
+-    service.addDeck = function (name, next) {
+-        db.openConnection();
+-
+-        var model = new db.models.Deck({ name: name });
+-        model.save(function (err) {
+-            db.closeConnection();
+-            next(err);
+-        });
+-    };
+-
+-
+-    service.removeDeck = function (id, next) {
+-        db.openConnection();
+-        db.models.Deck.remove({ _id: id }, function (err) {
+-            db.closeConnection();
+-            next(err);
+-        });
+-    };
+-
++    service.deck = require('./deck');
++      
+ })(module.exports);
+\ No newline at end of file
+diff --git a/view/home/index.vash b/view/home/index.vash
+index 13a610d..b9458a0 100644
+--- a/view/home/index.vash
++++ b/view/home/index.vash
+@@ -11,7 +11,6 @@
+         
+         <link rel='stylesheet' href='css/bootstrap/bootstrap.css'/>
+         <link rel='stylesheet' href='css/bootstrap/bootstrap-theme.css'/>
+-        <link rel='stylesheet' href='css/site.css'/>
+     </head>
+     <body>
+ 
+@@ -24,12 +23,12 @@
+           <div class="masthead clearfix">
+             <div class="inner">
+               <h3 class="masthead-brand">PuzzleQuest Deck Builder</h3>
+-              <ul class="nav masthead-nav">
+-                <li class="active"><a href="#/home">Home</a></li>
+-                <li><a href="#/home/about">Cards</a></li>
++              <ul class="nav nav-pills">
++                 <li class="active"><a href="#/home">Home</a></li>
++                <li><a href="#/card">Cards</a></li>
+                 <li><a href="#/contact">Contact</a></li>
+               </ul>
+-            </div>
++               </div>
+           </div>
+ 
+           <div class="inner cover">
+diff --git a/view/templates/deckListTemplate.html b/view/templates/deckListTemplate.html
+index 80d349f..ad0a442 100644
+--- a/view/templates/deckListTemplate.html
++++ b/view/templates/deckListTemplate.html
+@@ -1,10 +1,10 @@
+ <ul>
+     {{#each decks}}
+-    <li><a>{{this.name}}</a>
++    <li><a href="#/deck/{{this._id}}">{{this.name}}</a>
+     </li>
+     {{else}}
+     <li>No data found</li>
++    {{/each}}
+     <li><a href="{{newDeckLink}}">Create new deck</a>
+     </li>
+-    {{/each}}
+ </ul>
+diff --git a/view/templates/newDeckTemplate.html b/view/templates/newDeckTemplate.html
+new file mode 100644
+index 0000000..1be9088
+--- /dev/null
++++ b/view/templates/newDeckTemplate.html
+@@ -0,0 +1,10 @@
++<form role='form' id='newDeck'>
++    <div class="form-group">
++        <label for="deckName">Deck name</label>
++    	<input name='deckName' required type='text' value="{{name}}"></input>
++    	<input type="hidden" name="id" value="{{id}}"/>
++    </div>
++
++  <button type="submit" class="btn btn-default">Submit</button>
++
++</form>
+warning: LF will be replaced by CRLF in package.json.
+The file will have its original line endings in your working directory.
