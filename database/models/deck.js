@@ -10,13 +10,13 @@
 
     var CardShema = mongoose.Schema({
         name: {
-            type: String,
-            unique: true
+            type: String
         },
         cardType: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'CardType'
         },
+        image:String,
         level: Number,
         stars: Number,
         maxLevel: Number,
@@ -40,7 +40,7 @@
             type: String,
             unique: true
         },
-        cards: ['Card']
+        cards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Card' }]
     });
 
     models.init = function(models) {

@@ -3,5 +3,4 @@
     app.initialized = new signals.Signal();
     app.started = new signals.Signal();
 
-
 })(app || {}, $, signals);

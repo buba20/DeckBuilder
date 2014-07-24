@@ -1,10 +1,24 @@
 <form role='form' id='newDeck'>
-    <div class="form-group">
-        <label for="deckName">Deck name</label>
-    	<input name='deckName' required type='text' value="{{name}}"></input>
-    	<input type="hidden" name="id" value="{{id}}"/>
+    <div class="col-md-4">
+        <div class="form-group">
+            <input name='deckName' placeholder="Name" class="form-control" required type='text' value="{{name}}"></input>
+            <input type="hidden" name="id" value="{{id}}" />
+        </div>
     </div>
+    <div class='col-md-12'>
 
-  <button type="submit" class="btn btn-default">Submit</button>
-
+    </div>
+    <div class="col-md-12">
+        {{#if id }}
+        <input type="button" value="Delete" id="deleteButton" class="btn btn-danger" />{{/if}}
+        <input type="submit" value="Save" class="btn btn-default" />
+    </div>
+    <div class="cards">
+        <ul>
+            <li>
+                <label for="Card-1">Card:
+                    <input type="text" name="Card-1" value="53adb54ae67e6aa83652c9e4" />
+                </label>
+            </li>
+    </div>
 </form>

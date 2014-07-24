@@ -1,0 +1,160 @@
+<form role="form" class="form">
+<div class="row">
+  <div class="col-xs-6 col-md-3">
+    <a href="#" class="thumbnail">
+      <img data-src="holder.js/100%x180" alt="100%x180" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzEiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTcxIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijg1LjUiIHk9IjkwIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTcxeDE4MDwvdGV4dD48L3N2Zz4=" style="height: 180px; width: 100%; display: block;">
+    </a>
+    <input type="file" name='image' class="hide" />
+  </div>
+</div>
+    <div class="col-sm-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">General</div>
+            <div class="panel-body">
+                <div class="form-group col-sm-4">
+                    <input type="text" placeholder='Name' name='name' class="form-control" value="{{this.name}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <select id='cardType' placeholder='Card type' name="cardType" class="form-control">
+                        {{#each cardTypes}}
+                        <option value="{{this._id}}" {{#if this.selected }} selected="selected" {{/if}}>{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <input name='stars' placeholder='Stars' type="number" class="form-control" value="{{this.stars}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" class="form-control" placeholder='Level' value="{{this.level}}" name='level' />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input name='maxLevel' placeholder='Max level' class="form-control" type="number" value="{{this.maxLevel}}" />
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Health' class="form-control" name="health" value="{{this.health}}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="panel panel-default">
+            <div class='panel-heading'>Damage</div>
+            <div class="panel-body">
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Yellow' class="form-control" name="yellowDamage" value="{{this.yellowDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type='number' placeholder='Red' class="form-control" name="redDamage" value="{{this.redDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Blue' class="form-control" name="blueDamage" value="{{this.blueDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Purple' class="form-control" name="purpleDamage" value="{{this.purpleDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Green' class="form-control" name="greenDamage" value="{{this.greenDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Black' class="form-control" name="blackDamage" value="{{this.blackDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Critical' class="form-control" name="criticalDamage" value="{{this.criticalDamage}}" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <input type="number" placeholder='Empty' class="form-control" name="emptyDamage" value="{{this.emptyDamage}}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='col-sm-4'>
+        <div class='panel panel-default'>
+            <div class="panel-heading">Power 1</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <textarea class="form-control" name="power1.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name='power1.level' placeholder='Level' />
+                </div>
+                <div class="form-group">
+                    <select name="power1.color" class="form-control">
+                        <option value="Yellow">Yellow</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Green">Green</option>
+                        <option value="Black">Black</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" placeholder='Required gems' name='power1.requiredGems' />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='col-sm-4'>
+        <div class="panel panel-default">
+            <div class='panel-heading'>Power 2</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <textarea class="form-control" name="power2.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name='power2.level' placeholder='Level' />
+                </div>
+                <div class="form-group">
+                    <select name="power2.color" class="form-control">
+                        <option value="Yellow">Yellow</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Green">Green</option>
+                        <option value="Black">Black</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" placeholder='Required gems' name='power2.requiredGems' />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='col-sm-4'>
+        <div class="panel panel-default">
+            <div class='panel-heading'>Power 3</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <textarea class="form-control" name="power3.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name='power3.level' placeholder='Level' />
+                </div>
+                <div class="form-group">
+                    <select name="power3.color" class="form-control">
+                        <option value="Yellow">Yellow</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Green">Green</option>
+                        <option value="Black">Black</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" placeholder='Required gems' name='power3.requiredGems' />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name='_id' value="{{this._id}}" />{{#if this._id }}
+    <div class="col-sm-1">
+        <input type="button" class="btn btn-danger" id="deleteButton" class="btn btn-default" value="Delete" />
+    </div>
+    {{/if}}
+
+    <div class="col-sm-1">
+        <input type="submit" value="Save" class="btn btn-default " />
+    </div>
+</form>

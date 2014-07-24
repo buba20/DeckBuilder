@@ -1,0 +1,12 @@
+<p>All cards</p>
+<ul>
+    {{#each cards}}
+    <li>
+        <span><a href="#/cards/{{this._id}}">{{this.name}}</span>
+    </li>
+    {{else}}
+    <li>No cards</li>
+    {{/each}}
+    <li><a href="#/cards/new">Add new card</a>
+    </li>
+</ul>

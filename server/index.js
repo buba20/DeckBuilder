@@ -10,13 +10,14 @@
     app.use(express.static(process.cwd() + '/public'));
 
     app.use(bodyParser.json());       // to support JSON-encoded bodies
-    app.use(bodyParser.urlencoded());
-
+    app.use(bodyParser.urlencoded()); 
+ 
     server.start = function () {
         controler.init(app);
 
         app.listen(3000, function () {
             console.log('running at port 3000');
+            console.log(__dirname);
         });
     }
 

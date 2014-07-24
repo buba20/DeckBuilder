@@ -1,26 +1,19 @@
-(function(app, $, crossroads, indexViewTemplate) {
+(function(app, $, crossroads, indexSidebarTemplate) {
 
-    var index = function() {
+    var
+        renderSideBar = function(decks) {
+            app.sidebar.render(app.mapper.deckToSidebar(decks));
+        },
 
-        app.service.getDecks(function(data) {
-
+        index = function() {
             app.region.clearRegion(app.region.main);
-            var el = indexViewTemplate({
-                decks: data,
-                'newDeckLink': '#/deck/new'
+            app.service.getDecks().done(renderSideBar);
 
-            });
-
-            app.region.main.innerHTML = el;
-
-        });
-
-    }; // end index 
-
+        }; // end index 
 
     app.initialized.add(function() {
         crossroads.addRoute('home', index);
     });
 
 
-})(app, $, crossroads, app.templates.deckListTemplate);
+})(app, $, crossroads, app.templates.sidebarListTemplate);

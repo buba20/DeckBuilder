@@ -1,5 +1,10 @@
 (function(app, $, signals) {
-    var http = {};
+    var http = {},
+        defaultOption = {
+            ur: '',
+            dataType 'json',
+            cache: false,
+        };
 
     http = {
         requestStarted: new signals.Signal(),
@@ -14,13 +19,16 @@
         http.requestEnded.dispatch();
     });
 
-    http.getJSON = function(url, next) {
-        $.getJSON(url, function(data) {
-            next(data);
+    http.getJSON = function(url) {
+        $.extend(requestOptions, defaultOption, {
+            url: url
         });
+
+        return $.ajax(requestOptions);
     };
 
     http.postJSON = function(url, data, next) {
+        $.extend(requestOptions,defaultOption,{url:})
         $.post(url, data, function(e) {
             next(e);
         });
@@ -29,6 +37,15 @@
     http.putJSON = function(url, data, next) {
         $.ajax({
             type: "PUT",
+            url: url,
+            data: data,
+            contentType: false,
+            processData: false
+        }).done(next);
+    };
+    http.delete = function(url, data, next) {
+        $.ajax({
+            type: "DELETE",
             url: url,
             data: data
         }).done(next);

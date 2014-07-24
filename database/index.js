@@ -4,15 +4,18 @@
         connectionString = 'mongodb://localhost/PuzzleQuest',
         deckModel = require('./models/deck'),
         seed = require('./seed');
-
+    
     db.openConnection = function () {
-        return mongoose.connect(connectionString);
-    }
+    
+        mongoose.connect(connectionString);
+        
+    };
 
-    db.closeConnection = function () {
-        mongoose.connection.close();
-    }
+    db.closeConnection = function (connection) {
+        connection.close();
+    };
 
+    db.openConnection();
     db.models = {};
     deckModel.init(db.models);
     seed.run(db);
