@@ -20,7 +20,10 @@
         return $.ajax({
             url: '/api/deck',
             type: 'PUT',
-            data: data
+            data: data,
+            processData: false, // tell jQuery not to process the data
+            contentType: false // tell jQuery not to set contentType
+
         });
     };
 
@@ -61,12 +64,13 @@
                 dataType: 'json'
             });
         },
-        newCard: function() {
+        newCard: function(data) {
             return $.ajax({
-                url: '/api/card',
-                dataType: 'json',
-                type: 'PUT',
-                data: data
+                url: "api/card",
+                type: "PUT",
+                data: data,
+                processData: false, // tell jQuery not to process the data
+                contentType: false // tell jQuery not to set contentType
             });
         },
         update: function(data, next) {

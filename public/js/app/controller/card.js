@@ -43,10 +43,10 @@
                 var cardTypes = data;
 
                 service.cards.get(id).done(function(card) {
-                    if(card === null){
+                    if (card === null) {
                         goHome();
                     }
-                    
+
                     card.cardTypes = cardTypes;
                     setSelected(card.cardTypes, card.cardType);
 
@@ -79,26 +79,8 @@
 
         submitAddForm = function(e) {
             e.preventDefault();
-
-
             var oData = new FormData(document.forms[0]);
-
-            $.ajax({
-                url: "api/card",
-                type: "PUT",
-                data: oData,
-                processData: false, // tell jQuery not to process the data
-                contentType: false // tell jQuery not to set contentType
-            }).done(function() {
-                hasher.setHash('cards');
-            });
-
-
-            return;
-
-            var model = app.utils.convertFormToJSON(app.region.main, parseModel);
-            model.image = app.region.main.querySelector('img').src;
-            app.service.cards.newCard(model, function(data) {
+            app.service.cards.newCard(oData).done(function(data) {
                 hasher.setHash('cards');
             });
         },

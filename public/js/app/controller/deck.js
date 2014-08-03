@@ -1,73 +1,73 @@
+/*global app, $, crossroads,hasher*/
+/*jslint nomen: true */
 /*deck controller*/
-(function(app, $, crossroads, newDeckTemplate, service, hasher) {
+(function (app, $, crossroads, newDeckTemplate, service, hasher, DeckLayout) {
+    'use strict';
+    var readDeck = function (form) {
+            var result = {},
+                cardNodes = form.querySelectorAll("form input[name^='Card']"),
+                i;
 
-    var readDeck = function(form) {
-            var result = {};
             result.name = form.querySelector("form input[name='deckName']").value;
             result._id = form.querySelector("form input[name='id']").value;
             result.cards = [];
-
-            var cardNodes = form.querySelectorAll("form input[name^='Card']");
-            for (var i = cardNodes.length - 1; i >= 0; i--) {
+            for (i = cardNodes.length - 1; i >= 0; i -= 1) {
                 result.cards.push(cardNodes.item(i).value);
-            };
-
+            }
             return result;
         },
-
-        formSubmit = function(e) {
+        goHome = function () {
+            hasher.setHash('home');
+        },
+        formSubmit = function (e) {
             e.preventDefault();
             var deck = readDeck(app.region.main);
-            deck._id ? 
-            service.updateDeck(deck).done(goHome) : 
-            service.newDeck(deck).done(goHome);;
+            if (deck._id) {
+                service.updateDeck(deck).done(goHome);
+            } else {
+                service.newDeck(deck).done(goHome);
+            }
         },
-
-        setupEditFrom = function(deck) {
-            var form = newDeckTemplate({
-                name: deck.name,
-                id: deck._id
-            });
-
+        deleteDeck = function (deck) {
+            service.deleteDeck(deck).done(goHome);
+        },
+        setupEditFrom = function (deck) {
+            var
+                form = newDeckTemplate(deck),
+                deleteButton;
             app.region.show(app.region.main, form);
             form = app.region.main;
-
             form.querySelector('form').addEventListener('submit', formSubmit);
-
-            var deleteButton = form.querySelector('#deleteButton');
+            deleteButton = form.querySelector('#deleteButton');
             if (deleteButton) {
-                deleteButton.addEventListener('click', function(e) {
+                deleteButton.addEventListener('click', function (e) {
                     e.preventDefault();
                     deleteDeck(deck);
                 });
             }
         },
-        deleteDeck = function(deck) {
-            service.deleteDeck(deck).done(goHome);
-        },
-        renderSideBar = function(decks) {
+        renderSideBar = function (decks) {
             app.sidebar.render(app.mapper.deckToSidebar(decks));
         },
-
-        newDeck = function() {
-            setupEditFrom({
+        getEmptyDeck = function () {
+            return {
                 name: '',
-                id: ''
-            });
+                _id: '',
+                cards: [null, null, null]
+            };
+        },
+        newDeck = function () {
+            var layout = new DeckLayout(getEmptyDeck());
+            layout.render();
+
             app.service.getDecks().done(renderSideBar);
         },
-
-        editDeck = function(id) {
+        editDeck = function (id) {
             service.getDeck(id).done(setupEditFrom);
             service.getDecks().done(renderSideBar);
-        },
-        goHome = function() {
-            hasher.setHash('home');
         };
-
-    app.initialized.add(function() {
+    app.initialized.add(function () {
         crossroads.addRoute('deck/new', newDeck);
         crossroads.addRoute('deck/{id}', editDeck);
     });
-
-})(app, $, crossroads, app.templates.newDeckTemplate, app.service, hasher);
+}(app, $, crossroads, app.templates.newDeckTemplate, app.service, hasher, app.layouts.DeckLayout));

@@ -1,11 +1,12 @@
-var gulp = require('gulp');
-var handlebars = require('gulp-handlebars');
-var defineModule = require('gulp-define-module');
-var declare = require('gulp-declare');
-var concat = require('gulp-concat');
-var paths = {
-    templates: 'view/templates/*.html'
-}
+var gulp = require('gulp'),
+     handlebars = require('gulp-handlebars'),
+    defineModule = require('gulp-define-module'),
+    declare = require('gulp-declare'),
+    concat = require('gulp-concat'),
+    paths = {
+        templates: 'view/templates/*.html'
+    };
+
 gulp.task('templates', function() {
     gulp.src([paths.templates])
         .pipe(handlebars())
@@ -16,7 +17,6 @@ gulp.task('templates', function() {
         .pipe(concat('templates.js'))
         .pipe(gulp.dest('public/js/templates'));
 });
-
 // Rerun the task when a file changes
 gulp.task('watch', function() {
     gulp.watch(paths.templates, ['templates']);

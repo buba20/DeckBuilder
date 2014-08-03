@@ -1,0 +1,14 @@
+<div class="col-md-4">
+    <input type="hidden" value="{{ selectedId }}"/>
+    <div>
+        <select class="form-control" name="card_{{selectedId}}">
+            {{#each cards}}
+            <option value="{{_id}}" {{#if selected }} selected="selected" {{/if}}>{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <p>mini card</p>
+    </div>
+
+</div>

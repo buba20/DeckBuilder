@@ -1,7 +1,8 @@
 (function(deck) {
     'use strict';
     var service = require('../service'),
-
+        formidable = require('formidable'),
+        errorHandler = require('../errorHandler'),
         get = function(req, res) {
 
             service.deck.get(req.params.id, function(err, decks) {
@@ -13,15 +14,20 @@
         },
 
         add = function(req, res) {
-
-            service.deck.add(req.body, function(err) {
+            var form = new formidable.IncomingForm();
+            form.parse(req, function(err, fields, files) {
+                if (err) {
+                    errorHandler(err, req, res);
+                    return;
+                }
+            service.deck.add(fields, function(err) {
 
                 if (err) {
                     console.log(err);
                 }
-                res.end(req.body.name + ' Ok');
+                res.end(form.name + ' Ok');
             });
-
+            });
         },
 
         update = function(req, res) {

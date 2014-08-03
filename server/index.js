@@ -14,10 +14,9 @@
  
     server.start = function () {
         controler.init(app);
-
+        
         app.listen(3000, function () {
-            console.log('running at port 3000');
-            console.log(__dirname);
+            console.log('running at port 3000'); 
         });
     }
 

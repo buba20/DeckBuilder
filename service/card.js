@@ -30,9 +30,9 @@
         base.exec(query, next);
     };
 
-    service.deleteCard = function (id,next) {
+    service.deleteCard = function (id, next) {
         var query = model.findByIdAndRemove(id);
-        base.exec(query,next);
+        base.exec(query, next);
     };
 
 })(module.exports);
