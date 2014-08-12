@@ -20,6 +20,7 @@
                     errorHandler(err, req, res);
                     return;
                 }
+                fields.cards = fields.cards.split(',');
             service.deck.add(fields, function(err) {
 
                 if (err) {

@@ -21,4 +21,4 @@
     };
     app.views = app.views || {};
     app.views.DeckView = deckView;
-}(app, app.templates.newDeckTemplate, app.events.FormSubmitEvent));
+}(app, app.templates.newDeckTemplate, app.events.DeckFormSubmit));

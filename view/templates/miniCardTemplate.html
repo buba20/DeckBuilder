@@ -1,5 +1,5 @@
 <div class="col-md-4">
-    <input type="hidden" value="{{ selectedId }}"/>
+    <input type="hidden" value="{{ selectedId }}" />
     <div>
         <select class="form-control" name="card_{{selectedId}}">
             {{#each cards}}
@@ -8,7 +8,45 @@
         </select>
     </div>
     <div>
-        <p>mini card</p>
+        <span> {{ card.name }}</span>
+    </div>
+    <div id="stars"><span>Stars: {{card.stars}}</span></div>
+    <div>
+        <span> Health: {{ card.health }}</span>
+    </div>
+    <div id="damage">
+        <span>Damage:</span>
+        <div>
+            <span>Yellow: <span>{{ card.yellowDamage }} </span> </span>
+        </div>
+        <div>
+            <span>Red: <span>{{ card.redDamage }} </span> </span>
+        </div>
+        <div>
+            <span>Blue: <span>{{ card.blueDamage }} </span> </span>
+        </div>
+        <div>
+            <span>Purple: <span>{{ card.purpleDamage }} </span> </span>
+        </div>
+        <div>
+            <span>Green: <span>{{ card.greenDamage }} </span> </span>
+        </div>
+        <div>
+            <span>Black: <span>{{ card.blackDamage }} </span> </span>
+        </div>
+    </div>
+    <!--  end   damage-->
+    <div id="level">
+        <span>Level <span>{{card.level}}</span></span>
     </div>
 
+    <div id="powers">
+        {{#each card.powers}}
+        <div>
+            <span>{{level}}</span>
+            <span>{{name}}</span>
+            <span>{{gemColor}}</span>
+        </div>
+        {{/each}}
+    </div>
 </div>

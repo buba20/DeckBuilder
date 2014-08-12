@@ -12,6 +12,7 @@
     <link rel='stylesheet' href='css/bootstrap/bootstrap.css' />
     <link rel='stylesheet' href='css/bootstrap/bootstrap-theme.css' />
     <link rel='stylesheet' href='css/dashboard.css' />
+    <link rel="stylesheet" href="css/quest.css">
 </head>
 
 <body>
@@ -113,6 +114,7 @@
     <!-- Application files  -->
     <script type="text/javascript" src='js/templates/templates.js'></script>
     <script type="text/javascript" src="js/app/app.js"></script>
+    <script type="text/javascript" src='js/app/mediator.js'></script>
     <script type="text/javascript" src='js/app/decksToSidebarMapper.js'></script>
     <script type="text/javascript" src='js/app/region.js'></script>
 

@@ -1,23 +1,26 @@
 /*global app*/
-(function (app, region, cardSerivice, DeckView) {
+(function(app, region, cardSerivice, DeckView) {
     'use strict';
 
-    var deckLayout = function (model) {
+    var deckLayout = function(model) {
         app.Layout.call(this, model);
     };
 
     deckLayout.prototype = Object.create(app.Layout.prototype);
     deckLayout.prototype.constructor = deckLayout;
 
-    deckLayout.prototype.getViewForCard = function (cardModel, allCards) {
-        return cardModel ? new app.views.MiniCardView(cardModel) : new app.views.EmptyHeroCardView({
+    deckLayout.prototype.getViewForCard = function(cardModel, allCards) {
+        return cardModel ? new app.views.MiniCardView({
+            card: cardModel,
+            cards: allCards
+        }) : new app.views.EmptyHeroCardView({
             cards: allCards
         });
     };
 
-    deckLayout.prototype.render = function () {
+    deckLayout.prototype.render = function() {
         var layout = this;
-        cardSerivice.getAll().done(function (cards) {
+        cardSerivice.getAll().done(function(cards) {
             var deckView = new DeckView(layout.model),
                 cardsView = [],
                 i;

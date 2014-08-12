@@ -1,9 +1,9 @@
 /*global app, $, crossroads,hasher*/
 /*jslint nomen: true */
 /*deck controller*/
-(function (app, $, crossroads, newDeckTemplate, service, hasher, DeckLayout) {
+(function(app, $, crossroads, newDeckTemplate, service, hasher, DeckLayout) {
     'use strict';
-    var readDeck = function (form) {
+    var readDeck = function(form) {
             var result = {},
                 cardNodes = form.querySelectorAll("form input[name^='Card']"),
                 i;
@@ -16,10 +16,10 @@
             }
             return result;
         },
-        goHome = function () {
+        goHome = function() {
             hasher.setHash('home');
         },
-        formSubmit = function (e) {
+        formSubmit = function(e) {
             e.preventDefault();
             var deck = readDeck(app.region.main);
             if (deck._id) {
@@ -28,10 +28,10 @@
                 service.newDeck(deck).done(goHome);
             }
         },
-        deleteDeck = function (deck) {
+        deleteDeck = function(deck) {
             service.deleteDeck(deck).done(goHome);
         },
-        setupEditFrom = function (deck) {
+        setupEditFrom = function(deck) {
             var
                 form = newDeckTemplate(deck),
                 deleteButton;
@@ -40,33 +40,38 @@
             form.querySelector('form').addEventListener('submit', formSubmit);
             deleteButton = form.querySelector('#deleteButton');
             if (deleteButton) {
-                deleteButton.addEventListener('click', function (e) {
+                deleteButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     deleteDeck(deck);
                 });
             }
         },
-        renderSideBar = function (decks) {
+        renderSideBar = function(decks) {
             app.sidebar.render(app.mapper.deckToSidebar(decks));
         },
-        getEmptyDeck = function () {
+        getEmptyDeck = function() {
             return {
                 name: '',
                 _id: '',
                 cards: [null, null, null]
             };
         },
-        newDeck = function () {
+        newDeck = function() {
             var layout = new DeckLayout(getEmptyDeck());
             layout.render();
-
             app.service.getDecks().done(renderSideBar);
         },
-        editDeck = function (id) {
-            service.getDeck(id).done(setupEditFrom);
+        editDeck = function(id) {
+            service.getDeck(id).done(function(deck) {
+                if (deck) {
+                    debugger;
+                    var layout = new DeckLayout(deck);
+                    layout.render();
+                }
+            });
             service.getDecks().done(renderSideBar);
         };
-    app.initialized.add(function () {
+    app.initialized.add(function() {
         crossroads.addRoute('deck/new', newDeck);
         crossroads.addRoute('deck/{id}', editDeck);
     });
